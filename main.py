@@ -20,6 +20,24 @@ import constant
 import logging
 from docopt import docopt
 
+import fabric.api as fab
+from fabric.network import disconnect_all
+from contextlib import contextmanager
+
+@contextmanager
+def ssh(settings):
+    with settings:
+         try:
+            yield
+         finally:
+            disconnect_all()
+
+
+def anonymous():
+    with ssh(fab.settings(host_string="192.168.1.102", user="root", password="123456")):
+        res = fab.run('hostname')
+        print res.stdout
+
 
 def main():
     args = docopt(__doc__, version='ngxstat 0.0.1')
@@ -49,4 +67,5 @@ def main():
     report(field, sorted_list)
 
 if __name__ == "__main__":
-    main()
+    anonymous()
+    #main()
