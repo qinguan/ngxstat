@@ -1,0 +1,18 @@
+#
+#        log_format  notice  '$remote_addr - $remote_user [$time_local] "$request" '
+#                        '$status $body_bytes_sent "$http_referer" '
+#                        '"$http_user_agent" "$http_x_forwarded_for" '
+#                        '$request_length $upstream_response_time $request_time $upstream_addr';
+
+field:remote_addr = 0
+field:request = 6
+field:status = 8
+field:body_bytes_sent = 9
+field:http_referer = 10
+field:http_x_forwarded_for = -5
+field:upstream_response_time = -3
+field:request_time = -2
+field:upstream_addr = -1
+
+# field column sep
+refine_field:request:6:?
