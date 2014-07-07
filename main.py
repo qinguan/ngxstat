@@ -23,20 +23,30 @@ from docopt import docopt
 import fabric.api as fab
 from fabric.network import disconnect_all
 from contextlib import contextmanager
+from fabric.context_managers import hide
 
 @contextmanager
 def ssh(settings):
     with settings:
-         try:
+        try:
             yield
-         finally:
-            disconnect_all()
+        finally:
+            from fabric.state import connections
+
+            for key in connections.keys():
+                connections[key].close()
+                del connections[key]
+
+            #disconnect_all()
 
 
 def anonymous():
     with ssh(fab.settings(host_string="192.168.1.102", user="root", password="123456")):
-        res = fab.run('hostname')
-        print res.stdout
+        with hide('warnings', 'running', 'stdout', 'stderr'):
+            res = fab.run('ls -l')
+        for _ in res.split("\\n"):
+            print _
+        print res.command
 
 
 def main():
